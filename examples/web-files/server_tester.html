@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .target{
+            width: 1200px;
+            padding: 0;
+        }
+        .src {
+            width: 50px;
+            height: 20px;
+            font-size: 10px;
+            display: inline-block;
+        }
+        #target .src{
+            border: 1px solid red;
+        }
+        #src-wrapper{
+            display: none;
+        }
+    </style>
+    <script src="jquery3.js"></script>
+    <script>
+        function log(x){console && console.log && console.log(x)}
+        $(window).on('load', function(){
+            // make 1000 requests
+            let container = $('#target');
+            for(var i = 1; i <= 120; ++i){
+                let id = 'item' + i;
+                let item = $('#src-wrapper div.src').clone();
+                item.attr('id', id);
+                item.append(i);
+            //    log(item);
+            //   container.append('qqq ')
+                container.append(item[0])
+                if(i > 0 && i % 30 == 0){
+                    container.append('<br>')
+                }
+            }
+            // onclick ------------------------ 
+            $('button#start-test').on('click', function(){
+                log('Start! ');
+                $.each($('#target .src'), function(i, elem){
+                //    log(elem);
+                    elem = $(elem)
+                    elem.empty().append('wait...')
+                    $.ajax({
+                        url: 'http://localhost:81',
+                        success: function(data){
+                            elem.empty();
+                            elem.append('done');
+                        },
+                        error: function(data){
+                            elem.empty();
+                            elem.append('error');
+                        }
+                    });
+                });
+            });
+            // ----------------------------------
+        });
+    </script>
+</head>
+<body>
+<div id="src-wrapper" >
+    <div class="src">q1111 </div>
+</div>
+<div><button id="start-test">start</button></div>
+<div id="target">target<br></div>
+</body>
+</html>
